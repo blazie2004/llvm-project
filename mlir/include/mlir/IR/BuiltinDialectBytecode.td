@@ -296,9 +296,6 @@ def VectorType : DialectType<(type
   Type:$elementType
 )> {
   let printerPredicate = "!$_val.isScalable()";
-  // Use getChecked to produce a null type (and emit a diagnostic) instead of
-  // asserting when the element type does not implement VectorElementTypeInterface.
-  let cBuilder = "VectorType::getChecked([&]() { return reader.emitError(\"invalid vector type\"); }, shape, elementType)";
 }
 
 def VectorTypeWithScalableDims : DialectType<(type
@@ -308,7 +305,7 @@ def VectorTypeWithScalableDims : DialectType<(type
 )> {
   let printerPredicate = "$_val.isScalable()";
   // Note: order of serialization does not match order of builder.
-  let cBuilder = "getChecked<$_resultType>([&]() { return reader.emitError(); }, context, shape, elementType, scalableDims)";
+  let cBuilder = "get<$_resultType>(context, shape, elementType, scalableDims)";
 }
 }
 
